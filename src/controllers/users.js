@@ -8,7 +8,7 @@ exports.register = async (req, res) => {
 
     return res
       .status(201)
-      .json({ success: true, message: 'User created succefully.', user })
+      .json({ success: true, message: 'User created succefully.' })
   } catch (error) {
     console.log(error.message)
     return res.status(500).json({

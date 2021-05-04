@@ -17,9 +17,11 @@ app.use(passport.initialize())
 
 //router imports
 const userRoutes = require('./routes/users')
+const pinRoutes = require('./routes/pin')
 
 //use routes
 app.use('/api', userRoutes)
+app.use('/api', pinRoutes)
 
 //app start
 const appStart = () => {
