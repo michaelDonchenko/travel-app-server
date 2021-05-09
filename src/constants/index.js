@@ -9,4 +9,7 @@ module.exports = {
   SECRET: process.env.SECRET,
   MJ1: process.env.MJ_KEY1,
   MJ2: process.env.MJ_KEY2,
+  CLOUDINARY_NAME: process.env.CLOUDINARY_NAME,
+  CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
+  CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
 }

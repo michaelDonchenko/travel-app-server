@@ -5,19 +5,10 @@ const PinSchema = new Schema({
   long: Number,
   lat: Number,
 
-  comments: [
-    {
-      comment: String,
-      postedBy: {
-        type: Types.ObjectId,
-        ref: 'User',
-      },
-      date: {
-        type: Date,
-        default: Date.now(),
-      },
-    },
-  ],
+  createdBy: {
+    type: Types.ObjectId,
+    ref: 'User',
+  },
 })
 
 const Pin = model('Pin', PinSchema)
