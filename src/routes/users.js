@@ -1,5 +1,12 @@
 const { Router } = require('express')
-const { register, login, logout } = require('../controllers/users')
+const {
+  register,
+  login,
+  logout,
+  forgotPassword,
+  passwordResetValidation,
+  passwordResetAction,
+} = require('../controllers/users')
 const { validationMiddleware } = require('../middlewares/validation-middleware')
 const {
   registerValidation,
@@ -17,5 +24,14 @@ router.post('/login', loginValidation, validationMiddleware, login)
 
 //logout
 router.post('/logout', userAuth, logout)
+
+router.post('/forgot-password', forgotPassword)
+
+router.get(
+  '/password-reset-validation/:resetPasswordToken',
+  passwordResetValidation
+)
+
+router.post('/password-reset-action', passwordResetAction)
 
 module.exports = router

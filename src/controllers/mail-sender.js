@@ -1,25 +1,31 @@
 const { MJ1, MJ2 } = require('../constants')
 const mailjet = require('node-mailjet').connect(MJ1, MJ2)
 
-exports.sendMail = async () => {
+exports.sendMail = async (
+  email,
+  name,
+  subject,
+  textPart,
+  htmlPart,
+  costumId
+) => {
   const request = mailjet.post('send', { version: 'v3.1' }).request({
     Messages: [
       {
         From: {
-          Email: 'mikedev.media@gmail.com',
+          Email: 'mikesblogapp@gmail.com',
           Name: 'Mike',
         },
         To: [
           {
-            Email: 'mikedev.media@gmail.com',
-            Name: 'mike',
+            Email: email,
+            Name: name,
           },
         ],
-        Subject: 'Greetings from Mailjet.',
-        TextPart: 'My first Mailjet email',
-        HTMLPart:
-          "<h3>Dear passenger 1, welcome to <a href='https://www.mailjet.com/'>Mailjet</a>!</h3><br />May the delivery force be with you!",
-        CustomID: 'AppGettingStartedTest',
+        Subject: subject,
+        TextPart: textPart,
+        HTMLPart: htmlPart,
+        CustomID: costumId,
       },
     ],
   })

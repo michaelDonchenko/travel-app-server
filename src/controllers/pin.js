@@ -3,6 +3,20 @@ const PinComments = require('../models/PinComments')
 const { Types } = require('mongoose')
 const { v4: uuidv4 } = require('uuid')
 const PinRating = require('../models/PinRating')
+const PinImages = require('../models/PinPictures')
+const cloudinary = require('cloudinary')
+const {
+  CLOUDINARY_NAME,
+  CLOUDINARY_API_KEY,
+  CLOUDINARY_API_SECRET,
+} = require('../constants')
+
+//cloudinary config
+cloudinary.config({
+  cloud_name: CLOUDINARY_NAME,
+  api_key: CLOUDINARY_API_KEY,
+  api_secret: CLOUDINARY_API_SECRET,
+})
 
 exports.createPin = async (req, res) => {
   const { placeName, long, lat } = req.body
@@ -224,6 +238,48 @@ exports.getRating = async (req, res) => {
       success: true,
       rating,
     })
+  } catch (error) {
+    console.log(error.message)
+    return res.status(500).json({
+      success: false,
+      message: 'An error occurred',
+    })
+  }
+}
+
+exports.deletePin = async (req, res) => {
+  const id = req.params.id
+  try {
+    const pin = await Pin.findByIdAndDelete(id)
+    if (!pin) {
+      return res
+        .status(404)
+        .json({ success: false, message: 'Could not find the marker' })
+    }
+
+    const pinImages = await PinImages.findOne({ relatedTo: id })
+
+    if (pinImages) {
+      pinImages.images.forEach((img) => {
+        cloudinary.uploader.destroy(img.public_id, async ({ result }) => {
+          //if cloudinary deleted the image
+          if (result !== 'ok') {
+            return res
+              .status(400)
+              .json({ success: false, message: 'Could not delete the images' })
+          }
+        })
+      })
+
+      await pinImages.remove()
+    }
+
+    await PinComments.findOneAndDelete({ relatedTo: id })
+    await PinRating.findOneAndDelete({ relatedTo: id })
+
+    return res
+      .status(200)
+      .json({ message: 'Marker deleted succefully', success: true })
   } catch (error) {
     console.log(error.message)
     return res.status(500).json({
